@@ -4,18 +4,34 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Threading;
+using JetBrains.Annotations;
+using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
-public class WindowRepairPanel : MonoBehaviour
+public class WindowRepairPanel : MonoBehaviour, IDragHandler
 {
     [SerializeField]
     Task ownerTask;
 
     [SerializeField]
-    Button WindowCracked;
+    Button WindowCrackedObject;
+    [SerializeField]
+    Button WindowUncrackedObject;
 
+    //Drag Funktion
     public GameObject movedObject;
 
+
+    public GameObject blackAround;
+
+    public GameObject uncrackedWindow;
+    
     public Animator WindowAnimat;
+    public Animator UncrackAnimat;
+
+    int clickCounter = 0;
+
+    bool clicked = false;
 
     GameObject lastFirstSelectedGameObject;
 
@@ -32,29 +48,19 @@ public class WindowRepairPanel : MonoBehaviour
 
     private void Start()
     {
-        WindowCracked.onClick.AddListener(WindowCrackedScale);
-        WindowCracked.onClick.AddListener(WindowCrackedMove);
+        WindowCrackedObject.onClick.AddListener(WindowCracked);
         Debug.Log("Listeners added");
-        WindowDrag();
+        WindowUncrackedObject.onClick.AddListener(WindowUnCracked);
+    }
+    public void OnDrag(PointerEventData eventData)
+    {
+        Vector2 plannedRectPos = movedObject.GetComponent<RectTransform>().anchoredPosition + eventData.delta;
+        movedObject.GetComponent<RectTransform>().anchoredPosition = plannedRectPos;
     }
 
-
-    void WindowDrag()
+    void WindowCracked()
     {
-        Vector3 mousePosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0))
-        {
-            Collider2D UncrackedWindow = Physics2D.OverlapPoint(mousePosition);
-            if (UncrackedWindow)
-            {
-                movedObject = UncrackedWindow.transform.gameObject;
-            }
-        }
-        
-        
-    }
-    void WindowCrackedScale()
-    {
+        //Scale Window
         Debug.Log("ChangeSize");
 
         // Debug.Log("knappskit");
@@ -64,17 +70,37 @@ public class WindowRepairPanel : MonoBehaviour
         //     changeSize = true;
         // }
         //4 if(changeSize == true)
-
-        WindowAnimat.SetBool("ChangeWindButton", true);
-        WindowScale = true;
-    }
-    void WindowCrackedMove()
-    {
-        Debug.Log("Flytta");
-
-        if (WindowScale == true)
+        clickCounter++;
+        if (clickCounter == 1)
         {
+            WindowAnimat.SetBool("ChangeWindButton", true);
+        }
+        else if (clickCounter == 2)
+        {
+            //Move Window
+            clicked = false;
+            Debug.Log("Flytta");
+
             WindowAnimat.SetBool("IfChangeWindButtonTrue", true);
+        }
+    }
+    void WindowUnCracked()
+    {
+        RectTransform area = blackAround.GetComponent<RectTransform>();
+        area.localPosition = new Vector3(area.localPosition.x, area.localPosition.y, 0);
+        RectTransform WindowArea = uncrackedWindow.GetComponent<RectTransform>();
+        Vector2 windowAreaMin = new Vector2(WindowArea.position.x - (WindowArea.rect.width * WindowArea.localScale.x) / 2, WindowArea.position.y - (WindowArea.rect.height * WindowArea.localScale.y) / 2);
+        Vector2 windowAreaMax = new Vector2(WindowArea.position.x + (WindowArea.rect.width * WindowArea.localScale.x) / 2, WindowArea.position.y + (WindowArea.rect.height * WindowArea.localScale.y) / 2);
+        Vector2 areaMin = new Vector2(area.position.x - area.rect.width / 2, area.position.y - area.rect.height / 2);
+        Vector2 areaMax = new Vector2(area.position.x + area.rect.width / 2, area.position.y + area.rect.height / 2);
+        WindowArea.localPosition = new Vector3(WindowArea.localPosition.x, WindowArea.localPosition.y, 0);
+
+        Debug.LogFormat("Window Min: {0}, Window Max: {1}", windowAreaMin, windowAreaMax);
+        Debug.LogFormat("AREA Min: {0}, Area Max: {1}", areaMin, areaMax);
+
+        if (windowAreaMax.x > areaMax.x && windowAreaMax.y > areaMax.y && windowAreaMin.x < areaMin.x && windowAreaMin.y < areaMin.y)
+        {
+        UncrackAnimat.SetBool("Overlapping", true);
         }
     }
 
