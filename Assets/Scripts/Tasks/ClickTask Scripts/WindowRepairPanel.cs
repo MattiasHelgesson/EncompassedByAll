@@ -60,13 +60,12 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     }
     public void OnDrag(PointerEventData eventData)
     {
-        //if (animator == true)
-        //{
-        Debug.Log("OnDrag");
+        if(animator == true)
+        {
+            Debug.Log("OnDrag");
             Vector2 plannedRectPos = movedObject.GetComponent<RectTransform>().anchoredPosition + eventData.delta;
             movedObject.GetComponent<RectTransform>().anchoredPosition = plannedRectPos;
-        //}
-
+        }
     }
 
     void WindowCracked()
@@ -93,7 +92,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
             Debug.Log("Flytta");
 
             WindowAnimat.SetBool("IfChangeWindButtonTrue", true);
-            //animator = true;
+            animator = true;
         }
     }
     void WindowUnCracked()
