@@ -25,7 +25,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     public GameObject blackAround;
 
     public GameObject uncrackedWindow;
-    
+
     public Animator WindowAnimat;
     public Animator UncrackAnimat;
 
@@ -41,21 +41,32 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     bool changeSize = false;
 
-    bool WindowScale = false;
+    bool windowScale = false;
+
+    bool overlapping = false;
+
+    bool animator = false;
 
     //ownerTask.SetAsResolved();
     //Invoke("Hide", 1);
 
     private void Start()
     {
+
         WindowCrackedObject.onClick.AddListener(WindowCracked);
         Debug.Log("Listeners added");
         WindowUncrackedObject.onClick.AddListener(WindowUnCracked);
+        
     }
     public void OnDrag(PointerEventData eventData)
     {
-        Vector2 plannedRectPos = movedObject.GetComponent<RectTransform>().anchoredPosition + eventData.delta;
-        movedObject.GetComponent<RectTransform>().anchoredPosition = plannedRectPos;
+        //if (animator == true)
+        //{
+        Debug.Log("OnDrag");
+            Vector2 plannedRectPos = movedObject.GetComponent<RectTransform>().anchoredPosition + eventData.delta;
+            movedObject.GetComponent<RectTransform>().anchoredPosition = plannedRectPos;
+        //}
+
     }
 
     void WindowCracked()
@@ -82,6 +93,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
             Debug.Log("Flytta");
 
             WindowAnimat.SetBool("IfChangeWindButtonTrue", true);
+            //animator = true;
         }
     }
     void WindowUnCracked()
@@ -100,7 +112,17 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
         if (windowAreaMax.x > areaMax.x && windowAreaMax.y > areaMax.y && windowAreaMin.x < areaMin.x && windowAreaMin.y < areaMin.y)
         {
-        UncrackAnimat.SetBool("Overlapping", true);
+            Debug.Log("ANIMATOR ACTIVATED!");
+            UncrackAnimat.gameObject.GetComponent<Animator>();
+            UncrackAnimat.GetComponent<Animator>().enabled = true;
+            UncrackAnimat.SetBool("Overlapping", true);
+            overlapping = true;
+            if (overlapping == true)
+            {
+                UncrackAnimat.SetBool("SnapPoint", true);
+                animator = false;
+            }
+            
         }
     }
 
