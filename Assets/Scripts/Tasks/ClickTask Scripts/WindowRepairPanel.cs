@@ -7,6 +7,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using System;
 
 public class WindowRepairPanel : MonoBehaviour, IDragHandler
 {
@@ -35,26 +36,15 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     GameObject lastFirstSelectedGameObject;
 
-    bool blackAllAround = true;
-
-    bool gameStarted = false;
-
-    bool changeSize = false;
-
-    bool windowScale = false;
-
     bool overlapping = false;
 
     bool animator = false;
-
-    //ownerTask.SetAsResolved();
-    //Invoke("Hide", 1);
 
     private void Start()
     {
 
         WindowCrackedObject.onClick.AddListener(WindowCracked);
-        Debug.Log("Listeners added");
+        //Debug.Log("Listeners added");
         WindowUncrackedObject.onClick.AddListener(WindowUnCracked);
         
     }
@@ -62,7 +52,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     {
         if(animator == true)
         {
-            Debug.Log("OnDrag");
+            //Debug.Log("OnDrag");
             Vector2 plannedRectPos = movedObject.GetComponent<RectTransform>().anchoredPosition + eventData.delta;
             movedObject.GetComponent<RectTransform>().anchoredPosition = plannedRectPos;
         }
@@ -70,16 +60,8 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     void WindowCracked()
     {
-        //Scale Window
-        Debug.Log("ChangeSize");
+        //Debug.Log("ChangeSize");
 
-        // Debug.Log("knappskit");
-        // if (blackAllAround == true)
-        // {
-        //     WindowAnimat.SetBool("ChangeSize",true);
-        //     changeSize = true;
-        // }
-        //4 if(changeSize == true)
         clickCounter++;
         if (clickCounter == 1)
         {
@@ -89,7 +71,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
         {
             //Move Window
             clicked = false;
-            Debug.Log("Flytta");
+            //Debug.Log("Flytta");
 
             WindowAnimat.SetBool("IfChangeWindButtonTrue", true);
             animator = true;
@@ -111,7 +93,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
         if (windowAreaMax.x > areaMax.x && windowAreaMax.y > areaMax.y && windowAreaMin.x < areaMin.x && windowAreaMin.y < areaMin.y)
         {
-            Debug.Log("ANIMATOR ACTIVATED!");
+            //Debug.Log("ANIMATOR ACTIVATED!");
             UncrackAnimat.gameObject.GetComponent<Animator>();
             UncrackAnimat.GetComponent<Animator>().enabled = true;
             UncrackAnimat.SetBool("Overlapping", true);
@@ -120,6 +102,10 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
             {
                 UncrackAnimat.SetBool("SnapPoint", true);
                 animator = false;
+                ownerTask.SetAsResolved();
+
+                Invoke("Hide", 1.7f);
+
             }
             
         }
