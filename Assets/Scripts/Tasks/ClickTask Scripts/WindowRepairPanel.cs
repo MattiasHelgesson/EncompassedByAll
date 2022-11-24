@@ -42,7 +42,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     private void Start()
     {
-
+        //To play animation
         WindowCrackedObject.onClick.AddListener(WindowCracked);
         //Debug.Log("Listeners added");
         WindowUncrackedObject.onClick.AddListener(WindowUnCracked);
@@ -50,6 +50,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     }
     public void OnDrag(PointerEventData eventData)
     {
+        //Move object funktion
         if(animator == true)
         {
             //Debug.Log("OnDrag");
@@ -61,7 +62,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     void WindowCracked()
     {
         //Debug.Log("ChangeSize");
-
+        //To controll witch animation to play
         clickCounter++;
         if (clickCounter == 1)
         {
@@ -79,6 +80,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
     }
     void WindowUnCracked()
     {
+        //To se if window is in area
         RectTransform area = blackAround.GetComponent<RectTransform>();
         area.localPosition = new Vector3(area.localPosition.x, area.localPosition.y, 0);
         RectTransform WindowArea = uncrackedWindow.GetComponent<RectTransform>();
@@ -93,6 +95,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
         if (windowAreaMax.x > areaMax.x && windowAreaMax.y > areaMax.y && windowAreaMin.x < areaMin.x && windowAreaMin.y < areaMin.y)
         {
+            //Animation play based on WindowUnCracked
             //Debug.Log("ANIMATOR ACTIVATED!");
             UncrackAnimat.gameObject.GetComponent<Animator>();
             UncrackAnimat.GetComponent<Animator>().enabled = true;
@@ -113,6 +116,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     public void Show()
     {
+        //Show
         gameObject.SetActive(true);
         lastFirstSelectedGameObject = GameManager.Instance.EventSystem.firstSelectedGameObject;
         GameManager.Instance.EventSystem.firstSelectedGameObject = gameObject;
@@ -120,6 +124,7 @@ public class WindowRepairPanel : MonoBehaviour, IDragHandler
 
     public void Hide()
     {
+        //Hide
         gameObject.SetActive(false);
         GameManager.Instance.EventSystem.firstSelectedGameObject = lastFirstSelectedGameObject;
     }
